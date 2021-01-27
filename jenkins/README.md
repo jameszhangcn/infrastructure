@@ -3,7 +3,7 @@ Install Jenkins
 ![master-slave](resource/slave.png)
 
 
-![master-slave](resource/cloudConfigure.png)
+![cloud configure](resource/cloudConfigure.PNG)
 
 ## 说明一下：
 
@@ -60,7 +60,7 @@ podTemplate(label: label, cloud: 'kubernetes', containers: [
 
 Jenkins 中除了使用 Pipeline 方式运行 Job 外，通常我们也会使用普通类型 Job，如果也要想使用kubernetes plugin 来构建任务，那么就需要点击 “系统管理” —> “系统设置” —> “云” —> “Kubernetes” —> “Add Pod Template” 进行配置 “Kubernetes Pod Template” 信息。
 
-![master-slave](resource/podTemplate.png)
+![podTemplate](resource/podTemplate.png)
 
 注意：这里的 Labels 名在配置非 pipeline 类型 Job 时，用来指定任务运行的节点。Containers 下的 Name 字段的名字，这里要注意的是，如果 Name 配置为 jnlp，那么 Kubernetes 会用下边指定的 Docker Image 代替默认的 jenkinsci/jnlp-slave 镜像，否则，Kubernetes plugin 还是会用默认的 jenkinsci/jnlp-slave 镜像与 Jenkins Server 建立连接，即使我们指定其他 Docker Image。这里我随便配置为 jnlp-slave，意思就是使用默认的 jenkinsci/jnlp-slave 镜像来运行，因为我们暂时还没制作可以替代默认镜像的镜像。
 
