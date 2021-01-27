@@ -1,7 +1,71 @@
-Install Jenkins
+# Install Jenkins
+
 
 ![master-slave](resource/slave.png)
 
+## 使用名为helm-jenkins的namespace，执行以下命令创建：
+
+```
+kubectl create namespace helm-jenkins
+```
+
+## 创建PV
+为了后面的jenkins服务顺利启动，需要预先部署好pv：
+
+新建名为pv-helm-jenkins.yaml的文件，内容如下，其中192.168.133.142是NFS服务器地址，/usr/local/work/test/002是分配给本次实战使用的NFS文件夹：
+
+
+```
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+ name: helm-jenkins
+ namespace: helm-jenkins
+spec:
+ capacity:
+ storage: 10Gi
+ accessModes:
+ - ReadWriteOnce
+ persistentVolumeReclaimPolicy: Recycle
+ nfs:
+ path: /usr/local/work/test/002
+ server: 192.168.133.142
+```
+
+执行命令kubectl create -f pv-helm-jenkins.yaml，创建PV；
+查看PV是否已经就绪：
+确保以下helm repo准备好(如果没有可以通过helm repo add添加)：
+执行以下命令，即可创建jenkins的deployment、service等资源：
+
+```
+helm install --namespace helm-jenkins --name my-jenkins stable/jenkins
+```
+
+上述内容的第一条给出重要提示：获取admin账号密码的方法，执行以下命令即可：
+```
+printf $(kubectl get secret --namespace helm-jenkins my-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+
+```
+
+检查服务，发现helm-jenkins这个namespace下有两个服务：my-jenkins和my-jenkins-agent，前者就是jenkins网站，后者用来接收执行任务的jenkins实例的注册：
+
+```
+[root@node1 helm-jenkins]# kubectl get svc -n helm-jenkins
+NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE
+my-jenkins LoadBalancer 10.233.10.35 <pending> 8080:31763/TCP 31m
+my-jenkins-agent ClusterIP 10.233.35.20 <none> 50000/TCP 31m
+```
+
+my-jenkins这个服务的类型是LoadBalancer，8080端口被映射到宿主机的31763端口，因此，使用kubernetes集群中一台宿主机的IP，再加上31763端口即可通过浏览器访问；
+至此，jenkins安装已完成，接下来要做必要的设置.
+
+## 设置kubernetes插件
+为了让jenkins在以下模式工作，还需要设置kubernetes插件
+
+点击下图红框中的"Manage Jenkins",进入设置页面
+
+## helm安装jenkins
+确保helm2.16.1版本安装完毕，并且可以正常工作：
 
 ![cloud configure](resource/cloudConfigure.PNG)
 
@@ -60,7 +124,7 @@ podTemplate(label: label, cloud: 'kubernetes', containers: [
 
 Jenkins 中除了使用 Pipeline 方式运行 Job 外，通常我们也会使用普通类型 Job，如果也要想使用kubernetes plugin 来构建任务，那么就需要点击 “系统管理” —> “系统设置” —> “云” —> “Kubernetes” —> “Add Pod Template” 进行配置 “Kubernetes Pod Template” 信息。
 
-![podTemplate](resource/podTemplate.png)
+![podTemplate](resource/podTemplate.PNG)
 
 注意：这里的 Labels 名在配置非 pipeline 类型 Job 时，用来指定任务运行的节点。Containers 下的 Name 字段的名字，这里要注意的是，如果 Name 配置为 jnlp，那么 Kubernetes 会用下边指定的 Docker Image 代替默认的 jenkinsci/jnlp-slave 镜像，否则，Kubernetes plugin 还是会用默认的 jenkinsci/jnlp-slave 镜像与 Jenkins Server 建立连接，即使我们指定其他 Docker Image。这里我随便配置为 jnlp-slave，意思就是使用默认的 jenkinsci/jnlp-slave 镜像来运行，因为我们暂时还没制作可以替代默认镜像的镜像。
 
