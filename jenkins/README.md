@@ -162,4 +162,9 @@ podTemplate(label: label, cloud: 'kubernetes',containers: [
 
 当然，我们也可以使用非 Pipeline 类型指定运行该自定义 slave，那么我们就需要修改 “系统管理” —> “系统设置” —> “云” —> “Kubernetes” —> “Add Pod Template” 修改配置 “Kubernetes Pod Template” 信息如下：
 
-##
+## NOTE
+
+plugin offline download website
+```
+http://updates.jenkins-ci.org/download/plugins/
+```
