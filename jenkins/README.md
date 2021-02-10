@@ -167,4 +167,17 @@ podTemplate(label: label, cloud: 'kubernetes',containers: [
 plugin offline download website
 ```
 http://updates.jenkins-ci.org/download/plugins/
+安装jenkins 不能联网，安装插件的解决方法
+升级站点替换url：     http://mirror.xmission.com/jenkins/updates/update-center.json
+
+
+插件下载  http://updates.jenkins-ci.org/download/plugins/
+
+
+升级站点：http://updates.jenkins.io/update-center.json
+
+http://mirror.xmission.com/jenkins/updates/update-center.json
+
+
+插件可选   http://127.0.0.1:8080/jenkins/pluginManager/available   
 ```
