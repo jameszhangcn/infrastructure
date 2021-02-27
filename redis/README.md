@@ -18,3 +18,10 @@ To connect to your Redis server:
 2. Connect using the Redis CLI:
 
   redis-cli -h my-redis-redis -a $REDIS_PASSWORD
+
+
+有时候会有中文乱码。
+
+要在 redis-cli 后面加上 --raw
+
+redis-cli --raw
