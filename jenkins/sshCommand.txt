@@ -1,0 +1,55 @@
+def remote = [:]
+remote.name = 'apple'
+remote.host = '192.168.56.220'
+remote.allowAnyHosts = true
+
+pipeline {
+    agent {
+        label 'my-jenkins-slave-cluster'
+    }
+    environment {
+        GO = 'golang14.8'
+    }
+    options {
+        timeout(time: 1, unit: 'HOURS')
+    }
+    stages {
+        stage('BUILD') {
+            environment {
+                BUILD_SERVER_KEY = credentials('compile-server')
+            }
+
+            steps {
+                echo 'Building...'
+                echo "Build id ${env.BUILD_ID}"
+                echo "Job name ${env.JOB_NAME}"
+                echo "Jenkins URL ${env.JENKINS_URL}"
+                echo "GO is ${GO}"
+                script {
+  	                withCredentials([usernamePassword(credentialsId: 'node-apple', passwordVariable: 'password', usernameVariable: 'username')]) {
+   		                remote.user = "${username}"
+   		                remote.password = "${password}"
+  	                }
+  	                sshCommand remote: remote, command: "pwd"
+  	                sshCommand remote: remote, command: "ls -lrt"
+  	                sshCommand remote: remote, command: "kubectl get pods -A"
+                }
+                echo 'build ending'
+            }
+            //when {
+              //  branch 'master'
+            //}
+        }
+    }
+    post {
+        always {
+            echo "post always"
+        }
+        failure {
+            echo "post failure"
+        }
+        success {
+            echo "post success"
+        }
+    }
+}
