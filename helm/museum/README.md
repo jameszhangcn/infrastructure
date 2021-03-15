@@ -26,3 +26,9 @@ helm  create  demo
 helm push  demo  chartmuseum
 helm  install -n demo  chartmuseum/demo   --tiller-namespace  tiller-world  --namespace default
 
+
+
+helm3 install testhelm ./ --kubeconfig /nfsroot/workspace/agent-apple/.kube/config 
+
+helm3 delete testhelm  --kubeconfig /nfsroot/workspace/agent-apple/.kube/config
+

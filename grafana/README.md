@@ -1,14 +1,16 @@
-#git hub
+# grafana
 
-## create repository
+## helm install
 
 ```
-git init
-git add README.md
-git commit -m "first commit"
-git remote add origin https://github.com/xxx/xxxx.git
-git push -u origin master
+helm fetch stable/grafana
+```
 
-git show-ref
-git push --set-upstream personal_origin D**（current branch name）
+```
+apiVersion: apps/v1
+kind: Deployment
+```
+
+```
+helm install stable/grafana --name my-grafana
 ```

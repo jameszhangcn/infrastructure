@@ -1,0 +1,36 @@
+#!/bin/bash
+
+MME_PATH="/home/jianzhang/scriptsVbbu6090/mme/"
+DU_PATH="/home/jianzhang/scriptsVbbu6090/du/"
+echo "start testing"
+
+function kill_scripts()
+{
+    procName=$1
+    
+    for process in "`ps -ef | grep $procName | awk '{print $2}'| sed -n '1'p`"
+        do 
+        kill -9 $process;
+        echo "$process simu shutdown ok"
+    done
+}
+
+SLEEP_TIME=0
+while((1))
+do
+    kill_scripts "Mme"
+    kill_scripts "duSim"
+    #start the simulator 
+    let "SLEEP_TIME = $(($RANDOM%5))+ 30"
+    sleep $SLEEP_TIME
+    cd $MME_PATH
+    ./MmeSim &
+    let "SLEEP_TIME = $(($RANDOM%15)) + 10"
+    sleep $SLEEP_TIME
+    cd $DU_PATH
+    ./duSim_upd_6060 &
+    let "SLEEP_TIME = $(($RANDOM%15)) + 30"
+    sleep $SLEEP_TIME
+done
+
+

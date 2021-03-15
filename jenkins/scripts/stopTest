@@ -1,0 +1,22 @@
+#!/bin/bash
+
+MME_SIMU="/home/jianzhang/scriptsVbbu6090/mme/MmeSim"
+DU_SIMU="/home/jianzhang/scriptsVbbu6090/du/duSim_upd_6060"
+echo "start testing"
+
+function kill_scripts()
+{
+    procName=$1
+    
+    for process in "`ps -ef | grep $procName | awk '{print $2}'| sed -n '1'p`"
+        do 
+        kill -9 $process;
+        echo "$process simu shutdown ok"
+    done
+}
+
+kill_scripts "Mme"
+kill_scripts "duSim"
+
+
+

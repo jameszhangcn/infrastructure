@@ -1,0 +1,57 @@
+#!/bin/bash
+
+MME_PATH="/home/jenkins/mme/"
+DU_1_UE_PATH="/home/jenkins/du_1ue/"
+DU_PATH="/home/jenkins/du/"
+echo "start testing"
+
+function kill_scripts()
+{
+    procName=$1
+    
+    for process in "`ps -ef | grep $procName | awk '{print $2}'| sed -n '1'p`"
+        do 
+        kill -9 $process;
+        echo "$process simu shutdown ok"
+    done
+}
+
+#test case 1
+function is_s1_ok()
+{
+    count=0
+    while((1))
+    do
+        if cat 'test.log' | grep "Received S1SetupRequest" > /dev/null
+        then
+            echo "S1 setup OK"
+            break
+        fi
+        sleep 10
+        echo "wait s1 setup ..."
+        ((count++))
+        if [ $count -gt 200 ]; then
+            echo "S1 setup failed ..."
+            cat test.log
+            break
+        fi
+    done
+}
+
+function test_s1()
+{
+    echo "test s1 setup"
+    cd $MME_PATH
+    nohup ./MmeSim > test.log 2>&1 &
+    is_s1_ok
+    kill_scripts "Mme"
+}
+
+function test_ue_attach()
+{
+   echo "test ue attach"
+}
+
+echo "start testing"
+test_s1
+echo "testing finished"
