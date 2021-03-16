@@ -1,6 +1,6 @@
-#git hub
+#prometheus
 
-## create repository
+## helm3 install
 
 ```
 git init
