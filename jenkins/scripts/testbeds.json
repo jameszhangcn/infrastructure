@@ -1,0 +1,13 @@
+{
+    "testbeds": [
+		{
+			"clusterName": "Apple",
+			"buildServer": "10.1.1.27",
+			"dockerRegistry": "10.2.55.115",
+			"k8sMaster": "10.2.55.116",
+			"k8sWorker0": "10.2.55.117",
+			"k8sWorker1": "10.2.55.118",
+			"scriptServer": "10.2.55.112"
+		}
+	]
+}

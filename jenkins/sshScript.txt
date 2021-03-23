@@ -1,0 +1,139 @@
+The following plugin provides functionality available through Pipeline-compatible steps. Read more about how to integrate steps into your Pipeline in the Steps section of the Pipeline Syntax page.
+
+For a list of other such plugins, see the Pipeline Steps Reference page.
+
+Table of Contents
+SSH Pipeline Steps
+sshCommand: SSH Steps: sshCommand - Execute command on remote node.
+sshGet: SSH Steps: sshGet - Get a file/directory from remote node.
+sshPut: SSH Steps: sshPut - Put a file/directory on remote node.
+sshRemove: SSH Steps: sshRemove - Remove a file/directory from remote node.
+sshScript: SSH Steps: sshScript - Execute script(file) on remote node.
+SSH Pipeline Steps
+View this plugin on the Plugins site
+
+sshCommand: SSH Steps: sshCommand - Execute command on remote node.
+Takes a remote (map) of settings and command to execute it on the remote node and returns output. See docs on the README for more information.
+
+    def remote = [:]
+    remote.name = 'test'
+    remote.host = 'test.domain.com'
+    remote.user = 'root'
+    remote.password = 'password'
+    remote.allowAnyHosts = true
+    stage('Remote SSH') {
+      sshCommand remote: remote, command: "ls -lrt"
+      sshCommand remote: remote, command: "for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done"
+    }
+  
+command
+Type: String
+dryRun (optional)
+Type: boolean
+failOnError (optional)
+Type: boolean
+remote (optional)
+Nested Choice of Objects
+sudo (optional)
+Type: boolean
+sshGet: SSH Steps: sshGet - Get a file/directory from remote node.
+Takes a remote (map) of settings, local file/directory into to get the given file/directory from remote node. See docs on the README for more information.
+
+    def remote = [:]
+    remote.name = 'test'
+    remote.host = 'test.domain.com'
+    remote.user = 'root'
+    remote.password = 'password'
+    remote.allowAnyHosts = true
+    stage('Remote SSH') {
+      sshGet remote: remote, from: 'abc.sh', into: 'abc_get.sh', override: true
+    }
+  
+from
+Type: String
+into
+Type: String
+dryRun (optional)
+Type: boolean
+failOnError (optional)
+Type: boolean
+filterBy (optional)
+Type: String
+filterRegex (optional)
+Type: String
+override (optional)
+Type: boolean
+remote (optional)
+Nested Choice of Objects
+sshPut: SSH Steps: sshPut - Put a file/directory on remote node.
+Takes a remote (map) of settings, local file/directory from workspace and path to put this into remote node. See docs on the README for more information.
+
+    def remote = [:]
+    remote.name = 'test'
+    remote.host = 'test.domain.com'
+    remote.user = 'root'
+    remote.password = 'password'
+    remote.allowAnyHosts = true
+    stage('Remote SSH') {
+      writeFile file: 'abc.sh', text: 'ls -lrt'
+      sshPut remote: remote, from: 'abc.sh', into: '.'
+    }
+  
+from
+Type: String
+into
+Type: String
+dryRun (optional)
+Type: boolean
+failOnError (optional)
+Type: boolean
+filterBy (optional)
+Type: String
+filterRegex (optional)
+Type: String
+remote (optional)
+Nested Choice of Objects
+sshRemove: SSH Steps: sshRemove - Remove a file/directory from remote node.
+Takes a remote (map) of settings and path (file/directory) to remove from remote node. See docs on the README for more information.
+
+    def remote = [:]
+    remote.name = 'test'
+    remote.host = 'test.domain.com'
+    remote.user = 'root'
+    remote.password = 'password'
+    remote.allowAnyHosts = true
+    stage('Remote SSH') {
+      sshRemove remote: remote, path: "abc.sh"
+    }
+  
+path
+Type: String
+dryRun (optional)
+Type: boolean
+failOnError (optional)
+Type: boolean
+remote (optional)
+Nested Choice of Objects
+sshScript: SSH Steps: sshScript - Execute script(file) on remote node.
+Takes a remote (map) of settings and script a shell script file to execute it on the remote node and returns output. See docs on the README for more information.
+
+    def remote = [:]
+    remote.name = 'test'
+    remote.host = 'test.domain.com'
+    remote.user = 'root'
+    remote.password = 'password'
+    remote.allowAnyHosts = true
+    stage('Remote SSH') {
+      writeFile file: 'abc.sh', text: 'ls -lrt'
+      sshScript remote: remote, script: "abc.sh"
+    }
+  
+script
+Type: String
+dryRun (optional)
+Type: boolean
+failOnError (optional)
+Type: boolean
+remote (optional)
+Nested Choice of Objects
+Was this page helpful?
