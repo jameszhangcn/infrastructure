@@ -1,0 +1,68 @@
+def GetRemoteServer(name) {
+    
+    def remote = [:]
+    remote.name = 'test'
+    remote.ip = "10.1.1.27"
+    remote.host = "10.1.1.27"
+    remote.port = 22
+    remote.allowAnyHosts = true
+    withCredentials([usernamePassword(credentialsId: 'compile-server', passwordVariable: 'password', usernameVariable: 'userName')]) {
+        remote.user = "${userName}"
+        remote.password = "${password}"
+    }
+    return remote
+}
+
+node {
+    //configFileProvider(
+        //[configFile(fileId: 'b9402f72-1408-438b-bc44-e870776cbe02', targetLocation: 'testbeds.json', variable: 'testbeds')]
+    //){
+    stage('PREPARE'){
+        echo "preparing"
+        // 设置生成模板文件
+        configFileProvider([configFile(fileId: 'b9402f72-1408-438b-bc44-e870776cbe02',
+                                       targetLocation: 'testbeds.json', 
+                                       variable: 'testbeds')]) {
+            //  读取模板
+            echo "read testbed info ok"
+        }
+    }
+    stage('UNIT-TEST'){
+        echo "unit testing"
+    }
+    stage('PACKAGE-BUILD'){
+        remote = GetRemoteServer("compile-server")
+        echo "building"
+        writeFile file:'build2.sh', text: 'cd /home/zhangji/jenkins \n ls \n echo "testing building"'
+        sshScript remote: remote, dryRun: true, failOnError: true, script: "build2.sh"
+    }
+    stage('DOCKER-IMAGE') {
+        echo "docker image"
+    }
+    stage('HELM-INSTALL') {
+        echo "helm install"
+    }
+    stage('BRING-UP') {
+        echo "bring up testbet"
+    }
+    stage('INTEGRATE-TEST') {
+        echo "integrate testing"
+    }
+    stage('SEND-EMAIL') {
+        echo "send email"
+        // 设置生成模板文件
+        configFileProvider([configFile(fileId: 'f6f29e42-02f1-4cf3-bac8-edeeebd0eea1',
+                                       targetLocation: 'email.html', 
+                                       variable: 'failt_email_template')]) {
+            //  读取模板
+            template = readFile encoding: 'UTF-8', file: "${failt_email_template}"
+            //  发送邮件
+            emailext(subject: '任务执行失败',
+                     attachLog: true,
+                     recipientProviders: [requestor()], 
+                     to: 'jian.zhang@mavenir.com',
+                     body: """${template}""")
+        }
+    }
+    //}
+}

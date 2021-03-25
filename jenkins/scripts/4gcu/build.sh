@@ -70,7 +70,7 @@ function copy_image()
     cd $JENKINS_PATH
     cd $ENBCU_TAG
     cd $PLATFORM
-    rsync -rvl rhel_7_6_x86_64-ENBCU-FDD-ENBCUCP-${PLATFORM_TAG#*-}-XRAN.tar.gz root@$DOCKER_SERVER:/data/jenkins/$ENBCU_TAG/$BUILD_TAG/
+    rsync -rvl rhel_7_6_x86_64-ENBCU-FDD-ENBCUCP-${PLATFORM_TAG#*-}-$JENKINS_IMAGE_TAG-XRAN.tar.gz root@$DOCKER_SERVER:/data/jenkins/$ENBCU_TAG/$BUILD_TAG/
 }
 
 #main
