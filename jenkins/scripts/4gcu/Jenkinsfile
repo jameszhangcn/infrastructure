@@ -17,6 +17,18 @@ node {
     //configFileProvider(
         //[configFile(fileId: 'b9402f72-1408-438b-bc44-e870776cbe02', targetLocation: 'testbeds.json', variable: 'testbeds')]
     //){
+    parameters {
+      booleanParam(
+      name: "SkipBuild",
+      defaultValue: true,
+      description: "will build?"
+      )
+      string(
+      name: "branch",
+      defaultValue: "release/vbbu-6.0",
+      description: "git branch"
+      )
+    }
     stage('PREPARE'){
         echo "preparing"
         // 设置生成模板文件
@@ -26,15 +38,27 @@ node {
             //  读取模板
             echo "read testbed info ok"
         }
+        dir("scripts"){
+            git  branch: 'vbbu60', url: 'https://jameszhangcn@bitbucket.org/jameszhangcn/4g-cu-it.git'
+        }
+        dir("testcases"){
+            git url: 'https://jameszhangcn@bitbucket.org/jameszhangcn/4g-cu-testcases.git'
+        }
     }
     stage('UNIT-TEST'){
         echo "unit testing"
     }
     stage('PACKAGE-BUILD'){
         remote = GetRemoteServer("compile-server")
+        if(params.SkipBuild) {
         echo "building"
-        writeFile file:'build2.sh', text: 'cd /home/zhangji/jenkins \n ls \n echo "testing building"'
-        sshScript remote: remote, dryRun: true, failOnError: true, script: "build2.sh"
+        sh 'ls -lrt'
+        //sh 'sleep 6000'
+        //writeFile file:'build2.sh', text: 'cd /home/zhangji/jenkins \n ls \n echo "testing building"'
+        sshScript remote: remote, failOnError: true, script: "scripts/build.sh"
+        } else {
+            echo "skip building"
+        }
     }
     stage('DOCKER-IMAGE') {
         echo "docker image"

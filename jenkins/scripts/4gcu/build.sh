@@ -30,6 +30,7 @@ function build_image()
     cd $PLATFORM
     rm -rf *.tar.gz
     cd bbu
+    rm -rf build_cu.log
     git pull
     TIME_STAMP=$(date +%Y%m%d-%H%M%S)
     IMAGE_TAG=$(git rev-parse --short HEAD)
@@ -39,7 +40,7 @@ function build_image()
     export SKIP_PLATFORM=1
     export SKIP_BUILD_VPP=1
     export SKIP_VENDOR=1
-    export PATH=$PATH:./
+    export PATH=/usr/local/bison/bin:/usr/local/flex/bin:/opt/jdk-latest/bin:/opt/apache-ant-1.6.5/bin:/home/scmtools/scripts:/usr/lib64/qt-3.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/bin:/opt/apache-maven-3.0.5/bin:/usr/local/go/bin:/home/zhangji/bin:/home/zhangji/go/bin:/home/zhangji/gopath/bin:./
     nohup ./BUILD_CU RHEL_7_6_X86_64 FDD ENBCUCP-${PLATFORM_TAG#*-}-$JENKINS_IMAGE_TAG >build_cu.log 2>&1 &
 }
 

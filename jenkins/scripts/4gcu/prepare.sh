@@ -1,4 +1,4 @@
-
+#?/bin/bash
 PACKAGE_PATH=/data/jenkins
 DOCKER_SERVER=10.2.55.115
 ENBCU_TAG="ENBCU-R_6_0_10_0"
