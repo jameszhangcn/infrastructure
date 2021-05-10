@@ -45,7 +45,7 @@ def GetRemoteServer(name) {
 }
 
 def GetTestBedInfo(name){
-    def testbed = [:]
+    def testbedinfo = [:]
     configFileProvider([configFile(fileId: 'b9402f72-1408-438b-bc44-e870776cbe02',
                                        targetLocation: 'testbeds.json', 
                                        variable: 'testbeds')]) {
@@ -65,13 +65,13 @@ def GetTestBedInfo(name){
 			    echo "info $info"
 			    if (info.clusterName == name){
 			        echo "return info $name"
-			        return info
+			        testbedinfo = info
 			    }
 			}
 
         }
 
-    return testbed
+    return testbedinfo
 }
 
 node {
